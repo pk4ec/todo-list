@@ -39,20 +39,6 @@ function removeProject(index) {
     projects.splice(index, 1)
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function changeProjectPage(pjDestination) {
     document.querySelector('.topname').textContent = pjDestination
     if (document.querySelector('.task') || document.querySelector('.taskexpand')) { //check if tasks exists yet
