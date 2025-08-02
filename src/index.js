@@ -13,7 +13,15 @@ import edit from './media/edit/edit.svg'
 // light/dark mode
 // anims
 // delete pj/tasks
-const projects = [{pjName: 'Default'}]
+let projects;
+
+if (localStorage.getItem('projects')) {
+  projects = JSON.parse(localStorage.getItem('projects')); // load saved one
+} else {
+  projects = [{pjName: 'Default'}]; // use default
+  localStorage.setItem('projects', JSON.stringify(projects));   // save it
+}
+// const projects = [{pjName: 'Default'}]
 let activeProject = 'Default'
 function createTask(project, _title, _desc, _dueDate, _priority) { // tasks to projects
     if (project == '') { // if no project given, set to default (might not even need)
@@ -27,6 +35,7 @@ function createTask(project, _title, _desc, _dueDate, _priority) { // tasks to p
             projects[i].tasks[projects[i].tasks.length] = {title: _title, desc: _desc, dueDate: _dueDate, priority: _priority}
         }
     }
+    localStorage.setItem('projects', JSON.stringify(projects));
 }
 function makeProject(name) {
     createProject(name)
@@ -34,9 +43,11 @@ function makeProject(name) {
 }
 function createProject(name) {
     projects[projects.length] = {pjName: name}
+    localStorage.setItem('projects', JSON.stringify(projects));
 }
 function removeProject(index) {
     projects.splice(index, 1)
+    localStorage.setItem('projects', JSON.stringify(projects));
 }
 
 function changeProjectPage(pjDestination) {
@@ -68,6 +79,7 @@ function changeProjectPage(pjDestination) {
                     projects[i].tasks.splice(a, 1) // i thought 'a' might have problems since it updates so i was gonna use index instead but it works ig?
                     changeProjectPage(pjDestination)
                     console.log(projects);
+                    localStorage.setItem('projects', JSON.stringify(projects));
                 }}))
 
                 
@@ -98,50 +110,24 @@ function changeProjectPage(pjDestination) {
                     projects[i].tasks.splice(a, 1)
                     changeProjectPage(pjDestination)
                     console.log(projects);
+                    localStorage.setItem('projects', JSON.stringify(projects));
                 }}))
-
-                    
-
                 })
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function refreshProject() {
-    document.querySelector('.projectlibrary').innerHTML = '' //so fucking stupid
+    document.querySelector('.projectlibrary').innerHTML = '' //im so fucking stupid
     for (let i in projects) {
         document.querySelector('.projectlibrary').appendChild(Object.assign(document.createElement('div'), {
             textContent: projects[i].pjName, className: `project ${projects[i].pjName} pages`}).cloneNode(true))
 
         document.querySelectorAll('.project')[i].addEventListener('click', function () {
             activeProject = this.className.split(' ')[1]
-            // console.log(activeProject); // remove could fuck with activeproject
 
             for (let i in projects) {
                 if (projects[i].pjName == this.className.split(' ')[1]) {
-                    // console.log(projects[i].pjName);
                     changeProjectPage(projects[i].pjName)
                 }
             }
@@ -223,22 +209,12 @@ document.addEventListener("click", function (e) { //create project
 });
 document.querySelector('.content').addEventListener('click', function(e) {
   if (e.target !== parent) return; // Ignore if click came from any child
-      console.log('THE FUCK');
     e.stopPropagation()
     changeProjectPage(activeProject)
 });
 
 
 
-makeProject('test')
-makeProject('hw')
-makeProject('misc')
-createTask('', 'title', 'desxc', 'dduedate', 'highhh')
-createTask('', 'a', 'a', 'a', 'Low')
-createTask('', 'b', 'b', 'b', 'b')
-createTask('', 'z', 'z', 'z', 'z')
-createTask('hw', 'c', 'c', 'c', 'c')
-createTask('misc', 'w', 'w', 'w', 'w')
 refreshProject() // keep this
 changeProjectPage('Default')
 console.log(projects);
